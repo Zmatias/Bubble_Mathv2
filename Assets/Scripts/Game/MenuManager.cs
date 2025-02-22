@@ -9,6 +9,8 @@ public class MenuManager : MonoBehaviour
     public GameObject startMenu;
     public GameObject gameoverMenu;
     public GameObject readyToBubbleObject;
+    
+    public Transform Tutorial;
 
     public bool Gamestarted;
 
@@ -41,6 +43,11 @@ public class MenuManager : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.R))
         {
             SceneManager.LoadScene(0);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            Tutorial.gameObject.SetActive(true);
         }
     }
 

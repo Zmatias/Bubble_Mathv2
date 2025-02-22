@@ -179,13 +179,13 @@ public class GameManager : MonoBehaviour
         if (bubbleColor == T1Color && LeftOrRigh=="Left")
         {
             var scoreToAddRaw = multipleScoreT1*MainAddScore;
-            bubble.SpawnFloatingEffect(ScoreHandler.Instance.t1Score+scoreToAddRaw,true);
+            bubble.SpawnFloatingEffect(scoreToAddRaw,true);
             //ScoreHandler.Instance.AddScoreToTeam(multipleScore*MainAddScore, true);            
         }
         else if (bubbleColor == T2Color && LeftOrRigh=="Right")
         {
             var scoreToAddRaw = multipleScoreT2*MainAddScore;
-            bubble.SpawnFloatingEffect(ScoreHandler.Instance.t2Score+scoreToAddRaw,false);
+            bubble.SpawnFloatingEffect(scoreToAddRaw,false);
             //ScoreHandler.Instance.AddScoreToTeam(multipleScore*MainAddScore, false);            
         }
     }

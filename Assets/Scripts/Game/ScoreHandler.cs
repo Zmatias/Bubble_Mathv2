@@ -26,14 +26,14 @@ public class ScoreHandler : MonoBehaviour
         if (isTeam1)
         {
             int startScore = t1Score;
-            t1Score=rawAmount;
+            t1Score=t1Score+rawAmount;
             StartCoroutine(AnimateScore(t1ScoreText, startScore, t1Score));
             floatEffect=effect;
         }
         else
         {
             int startScore = t2Score;
-            t2Score=rawAmount;
+            t2Score=t2Score+rawAmount;
             StartCoroutine(AnimateScore(t2ScoreText, startScore, t2Score));
             floatEffect=effect;
         }

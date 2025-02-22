@@ -1,6 +1,7 @@
 using UnityEngine;
 using WebSocketSharp;
 using TMPro;
+using System.Collections;
 
 public class WebSocketListener : MonoBehaviour
 {
@@ -10,6 +11,14 @@ public class WebSocketListener : MonoBehaviour
     public string text;
     public TextMeshProUGUI debubQR;
     public static WebSocketListener instance;
+
+    public bool PuzzleAReady;
+    public bool PuzzleBReady;
+
+    public bool CheckMode;
+
+    public GameObject PuzzleADone;
+    public GameObject PuzzleBDone;
    
     void Start()
     {
@@ -31,6 +40,8 @@ public class WebSocketListener : MonoBehaviour
 
                 Debug.Log($"New QR Code Detected: {CurrentQRData}");
             }
+
+            
         };
 
         // Define what happens when the connection is established
@@ -57,6 +68,52 @@ public class WebSocketListener : MonoBehaviour
 
 
         debubQR.text = CurrentQRData;
+        //Debug.Log(CurrentQRData);
+
+
+        if(CurrentQRData=="puzzle_ready_A")
+        {
+            PuzzleReadyA();
+        }
+        else if(CurrentQRData=="puzzle_ready_B")
+        {
+            PuzzleReadyB();
+        }
+    }
+
+    public void PuzzleReadyA()
+    {
+        if(!PuzzleAReady)
+        {
+            ScoreHandler.Instance.AddScoreToTeam(500,true,null);
+            PuzzleADone.gameObject.SetActive(true);
+            //Do something
+            PuzzleAReady=true;
+            CheckMode=false;
+        }
+    }
+
+    public IEnumerator restartCheck()
+    {
+        yield return new WaitForSeconds(5.5f);
+        CheckMode=false;
+    }
+
+    public void CheckAnimation()
+    {
+
+    }
+
+    public void PuzzleReadyB()
+    {
+        if(!PuzzleBReady)
+        {
+            ScoreHandler.Instance.AddScoreToTeam(500,false,null);
+            PuzzleBDone.gameObject.SetActive(true);
+            //Do something
+            PuzzleBReady=true;
+            CheckMode=false;
+        }
     }
 
     void OnDestroy()
