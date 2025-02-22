@@ -17,6 +17,7 @@ public class QuizManager : MonoBehaviour
         LoadQuestionsFromTextAsset(csvFile);
     }
     [System.Serializable]
+    
     public class Question
     {
         public string Equation;
@@ -31,7 +32,8 @@ public class QuizManager : MonoBehaviour
         }
     }
 
-    public List<Question> Questions = new List<Question>();
+    public List<Question> QuestionsTeam1 = new List<Question>();
+    public List<Question> QuestionsTeam2 = new List<Question>();
     public int t1currentQuestionIndex = -1;
     public int t2currentQuestionIndex = -1;
 
@@ -40,31 +42,84 @@ public class QuizManager : MonoBehaviour
     public GameObject[] greenT1;
     public GameObject[] redT2;
     public GameObject[] greenT2;
-    public void StartQuiz()
+
+    public BuffType QuestionAwardT1;
+    public BuffType QuestionAwardT2;
+
+    
+    public enum BuffType
     {
-        GetNextQuestion(true);
-        GetNextQuestion(false);
+        Supercharge,
+        Diminished,
+        BubbleStorm
     }
 
-    public void GetNextQuestion(bool isTeam1)
+    public void StartQuiz()
+    {
+        GetNextQuestion_NoDelay(true);
+        GetNextQuestion_NoDelay(false);
+    }
+
+    public void GetNextQuestion_NoDelay(bool isTeam1)
     {
         if (isTeam1)
         {
             t1currentQuestionIndex++;
-            UIHandler.instance.RedQuiz.Question.text = Questions[t1currentQuestionIndex].Equation;
-            UIHandler.instance.RedQuiz.Answer1.text = Questions[t1currentQuestionIndex].Answers[0].ToString();
-            UIHandler.instance.RedQuiz.Answer2.text = Questions[t1currentQuestionIndex].Answers[1].ToString();
-            UIHandler.instance.RedQuiz.Answer3.text = Questions[t1currentQuestionIndex].Answers[2].ToString();
-            UIHandler.instance.RedQuiz.Answer4.text = Questions[t1currentQuestionIndex].Answers[3].ToString();
+            UIHandler.instance.RedQuiz.Question.text = QuestionsTeam1[t1currentQuestionIndex].Equation;
+            UIHandler.instance.RedQuiz.Answer1.text = QuestionsTeam1[t1currentQuestionIndex].Answers[0].ToString();
+            UIHandler.instance.RedQuiz.Answer2.text = QuestionsTeam1[t1currentQuestionIndex].Answers[1].ToString();
+            UIHandler.instance.RedQuiz.Answer3.text = QuestionsTeam1[t1currentQuestionIndex].Answers[2].ToString();
+            UIHandler.instance.RedQuiz.Answer4.text = QuestionsTeam1[t1currentQuestionIndex].Answers[3].ToString();
+            UIHandler.instance.Team1Frost.gameObject.SetActive(false);
+            QuestionAwardT1=GetRandomBuff();
+            Debug.Log("Random Award is T1 : " + QuestionAwardT1.ToString());
+            UIHandler.instance.SetT1PowerUpIco(QuestionAwardT1.ToString());
+            
         }
         else
         {
             t2currentQuestionIndex++;
-            UIHandler.instance.BlueQuiz.Question.text = Questions[t2currentQuestionIndex].Equation;
-            UIHandler.instance.BlueQuiz.Answer1.text = Questions[t2currentQuestionIndex].Answers[0].ToString();
-            UIHandler.instance.BlueQuiz.Answer2.text = Questions[t2currentQuestionIndex].Answers[1].ToString();
-            UIHandler.instance.BlueQuiz.Answer3.text = Questions[t2currentQuestionIndex].Answers[2].ToString();
-            UIHandler.instance.BlueQuiz.Answer4.text = Questions[t2currentQuestionIndex].Answers[3].ToString();
+            UIHandler.instance.BlueQuiz.Question.text = QuestionsTeam2[t2currentQuestionIndex].Equation;
+            UIHandler.instance.BlueQuiz.Answer1.text = QuestionsTeam2[t2currentQuestionIndex].Answers[0].ToString();
+            UIHandler.instance.BlueQuiz.Answer2.text = QuestionsTeam2[t2currentQuestionIndex].Answers[1].ToString();
+            UIHandler.instance.BlueQuiz.Answer3.text = QuestionsTeam2[t2currentQuestionIndex].Answers[2].ToString();
+            UIHandler.instance.BlueQuiz.Answer4.text = QuestionsTeam2[t2currentQuestionIndex].Answers[3].ToString();
+            UIHandler.instance.Team2Frost.gameObject.SetActive(false);
+            QuestionAwardT2=GetRandomBuff();
+            Debug.Log("Random Award is T2 : " + QuestionAwardT1.ToString());
+            UIHandler.instance.SetT2PowerUpIco(QuestionAwardT2.ToString());
+        }
+    }
+
+    public void GetNextQuestion(bool isTeam1)
+    {
+        StartCoroutine(DelayNextQuestion(isTeam1));
+    }
+
+    public IEnumerator DelayNextQuestion(bool isTeam1)
+    {
+        yield return new WaitForSeconds(5f);
+
+        GetNextQuestion_NoDelay(isTeam1);
+    }
+
+
+    public BuffType GetRandomBuff()
+    {
+        string[] buffs = { "BubbleStorm", "Supercharge", "Diminished" };
+        var buf = buffs[Random.Range(0, buffs.Length)];
+
+        if(buf=="BubbleStorm")
+        {
+            return BuffType.BubbleStorm;
+        }
+        else if(buf=="Supercharge")
+        {
+            return BuffType.Supercharge;
+        }
+        else
+        {
+            return BuffType.Diminished;
         }
     }
 
@@ -74,11 +129,12 @@ public class QuizManager : MonoBehaviour
         if (isTeam1)
         {
             Debug.Log("After If1");
-            if (Questions[t1currentQuestionIndex].CorrectAnswer == Questions[t1currentQuestionIndex].Answers[choiceId])
+            if (QuestionsTeam1[t1currentQuestionIndex].CorrectAnswer == QuestionsTeam1[t1currentQuestionIndex].Answers[choiceId])
             {
                 Debug.Log("Check Correct");
-                BuffHandler.Instance.AddRandomBuffToTeam(true);
-                GetNextQuestion(isTeam1);
+                BuffHandler.Instance.ApplyOtherBuffTypeToTeam(QuestionAwardT1.ToString(),true);
+                UIHandler.instance.Team1Frost.gameObject.SetActive(true);
+                StartCoroutine(DelayNextQuestion(isTeam1));
                 greenT1[choiceId].SetActive(true);
                 StartCoroutine(deactivateAnswer(greenT1[choiceId]));
             }
@@ -92,11 +148,12 @@ public class QuizManager : MonoBehaviour
         else
         {
             Debug.Log("After If2");
-            if (Questions[t2currentQuestionIndex].CorrectAnswer == Questions[t2currentQuestionIndex].Answers[choiceId])
+            if (QuestionsTeam2[t2currentQuestionIndex].CorrectAnswer == QuestionsTeam2[t2currentQuestionIndex].Answers[choiceId])
             {
                 Debug.Log("Check Correct2");
-                BuffHandler.Instance.AddRandomBuffToTeam(false);
-                GetNextQuestion(isTeam1);
+                BuffHandler.Instance.ApplyOtherBuffTypeToTeam(QuestionAwardT2.ToString(),false);
+                UIHandler.instance.Team2Frost.gameObject.SetActive(true);
+                StartCoroutine(DelayNextQuestion(isTeam1));
                 greenT2[choiceId].SetActive(true);
                 StartCoroutine(deactivateAnswer(greenT2[choiceId]));
                 //
@@ -111,7 +168,7 @@ public class QuizManager : MonoBehaviour
 
     private IEnumerator deactivateAnswer(GameObject obj)
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(5f);
 
         obj.SetActive(false);
     }
@@ -149,7 +206,11 @@ public class QuizManager : MonoBehaviour
             int[] answers = new int[] { correctAnswer, wrong1, wrong2, wrong3 };
             ShuffleArray(answers); // Randomize the answer order
 
-            Questions.Add(new Question(equation, correctAnswer, answers));
+            QuestionsTeam1.Add(new Question(equation, correctAnswer, answers));
+            QuestionsTeam2.Add(new Question(equation, correctAnswer, answers));
+
+            QuestionsTeam1.Shuffle();
+            QuestionsTeam2.Shuffle();
         }
 
         Debug.Log("Questions loaded successfully from TextAsset.");

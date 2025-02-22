@@ -7,8 +7,11 @@ using Joint = Windows.Kinect.Joint;
 
 public class BodySourceView : MonoBehaviour
 {
+    public static BodySourceView instance;
     public BodySourceManager mBodySourceManager;
     public GameObject mJointObject;
+
+    public List<GameObject> HandJoints;
 
     private Dictionary<ulong, GameObject> mBodies = new Dictionary<ulong, GameObject>();
     private List<JointType> _joints = new List<JointType>
@@ -16,6 +19,11 @@ public class BodySourceView : MonoBehaviour
         JointType.HandLeft,
         JointType.HandRight,
     };
+
+    void Awake()
+    {
+        instance=this;       
+    }
 
     void Update()
     {
@@ -70,6 +78,22 @@ public class BodySourceView : MonoBehaviour
         #endregion
     }
 
+    public void DisableHandColliders()
+    {
+        foreach(GameObject obj in HandJoints)
+        {
+            obj.GetComponent<SphereCollider>().enabled=false;
+        }
+    }
+
+    public void EnableHandColliders()
+    {
+        foreach(GameObject obj in HandJoints)
+        {
+            obj.GetComponent<SphereCollider>().enabled=true;
+        }
+    }
+
     private GameObject CreateBodyObject(ulong id)
     {
         // Create body parent
@@ -80,6 +104,7 @@ public class BodySourceView : MonoBehaviour
         {
             // Create Object
             GameObject newJoint = Instantiate(mJointObject);
+            HandJoints.Add(newJoint);
             newJoint.name = joint.ToString();
 
             // Parent to body

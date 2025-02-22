@@ -56,6 +56,8 @@ public class MenuManager : MonoBehaviour
 
     public void Gameover()
     {
+
+
         Destroy(BubbleManager.Instance);
         gameoverMenu.SetActive(true);
     }

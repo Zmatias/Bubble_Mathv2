@@ -14,24 +14,28 @@ public class ScoreHandler : MonoBehaviour
 
     public float countSpeed = 1.0f;
 
+    public FloatingEffect floatEffect;
+
     private void Awake()
     {
         Instance = this;
     }
 
-    public void AddScoreToTeam(int rawAmount, bool isTeam1)
+    public void AddScoreToTeam(int rawAmount, bool isTeam1,FloatingEffect effect)
     {
         if (isTeam1)
         {
             int startScore = t1Score;
-            t1Score += BuffHandler.Instance.ApplyScoreBuff(rawAmount, true);
+            t1Score=rawAmount;
             StartCoroutine(AnimateScore(t1ScoreText, startScore, t1Score));
+            floatEffect=effect;
         }
         else
         {
             int startScore = t2Score;
-            t2Score += BuffHandler.Instance.ApplyScoreBuff(rawAmount, false);
+            t2Score=rawAmount;
             StartCoroutine(AnimateScore(t2ScoreText, startScore, t2Score));
+            floatEffect=effect;
         }
     }
 
@@ -39,6 +43,8 @@ public class ScoreHandler : MonoBehaviour
     {
         float elapsedTime = 0f;
         float duration = Mathf.Abs(endValue - startValue) / countSpeed;
+
+
 
         while (elapsedTime < duration)
         {

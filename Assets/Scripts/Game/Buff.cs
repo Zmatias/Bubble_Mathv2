@@ -1,20 +1,26 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
+using UnityEngine.UIElements;
 
 public class Buff : MonoBehaviour
 {
-    public BuffType type;
     public int id;
     public Sprite sprite;
-    public string name;
     private float activeTimer = 5f;
     public AudioClip voiceoverClip;
 
+    public AudioSource audiosource;
+
+    public Sprite ico;
+
+    void Awake()
+    {
+        audiosource=transform.parent.GetComponent<AudioSource>();
+    }
     private void OnEnable()
     {
+        audiosource.PlayOneShot(voiceoverClip);
         StartCoroutine(dissaapera());
     }
 
@@ -42,16 +48,4 @@ public class Buff : MonoBehaviour
             Destroy(gameObject);
         }
     }*/
-
-    public void SetUpBuff(Buff buff)
-    {
-        /*this.type = buff.type;
-        this.id = buff.id;
-        this.sprite = buff.sprite;
-        this.name = buff.name;
-        this.voiceoverClip = buff.voiceoverClip;
-
-        GetComponent<AudioSource>().clip = voiceoverClip;
-        GetComponent<AudioSource>().Play();*/
-    }
 }

@@ -18,12 +18,28 @@ public class UIHandler : MonoBehaviour
     public QuizUiElements BlueQuiz;
 
     [Header("Frost")]
-    public Image RedFrost;
-    public Image BlueFrost;
+    public Image Team1Frost;
+    public Image Team2Frost;
 
     [Header("Rest")]
 
     public Transform SwapPauseTransparent;
+
+    [Header("PowerUps")]
+
+    public Image T1PowerUp;
+    public Image T2PowerUp;
+
+    [Header("PowerUps Ico")]
+
+    public Sprite Superchage;
+    public Sprite BubbleStorm;
+    public Sprite Dimminished;
+
+    [Header("Team New Colors")]
+
+    public Transform T1NewColor;
+    public Transform T2NewColor;
 
     private void Awake() {
         instance=this;
@@ -39,6 +55,38 @@ public class UIHandler : MonoBehaviour
         
     }
 
+    public void SetT1PowerUpIco(string powerUp)
+    {
+        if(powerUp=="Supercharge")
+        {
+            T1PowerUp.sprite=Superchage;
+        }
+        else if(powerUp=="Diminished")
+        {
+            T1PowerUp.sprite=Dimminished;
+        }
+        else
+        {
+            T1PowerUp.sprite=BubbleStorm;
+        }
+    }
+
+    public void SetT2PowerUpIco(string powerUp)
+    {
+        if(powerUp=="Supercharge")
+        {
+            T2PowerUp.sprite=Superchage;
+        }
+        else if(powerUp=="Diminished")
+        {
+            T2PowerUp.sprite=Dimminished;
+        }
+        else
+        {
+            T2PowerUp.sprite=BubbleStorm;
+        }
+    }
+
     public void updateBlueScore(string text)
     {
         BlueScore.text=text;
@@ -48,17 +96,6 @@ public class UIHandler : MonoBehaviour
     {
         RedScore.text=text;
     }
-
-    public void updateFrostRed(Color col)
-    {
-        RedFrost.color=col;
-    }
-
-    public void updateFrostBlue(Color col)
-    {
-        BlueFrost.color=col;
-    }
-
 
     [Serializable]
     public class QuizUiElements
