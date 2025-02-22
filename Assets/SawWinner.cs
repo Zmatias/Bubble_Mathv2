@@ -7,6 +7,10 @@ public class SawWinner : MonoBehaviour
     public static SawWinner instance;
     public Transform LeftWinner;
     public Transform RightWinner;
+
+    public AudioClip thankYou;
+
+    public AudioSource audiosource;
     // Start is called before the first frame update
 
     void Awake()
@@ -22,6 +26,11 @@ public class SawWinner : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void ThankYou()
+    {
+        audiosource.PlayOneShot(thankYou);
     }
 
 
